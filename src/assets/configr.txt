@@ -1,0 +1,22 @@
+module.exports = {
+    globeIdentification: "3B-410-WFH",
+    globeDeployment: "WFH WFH-Site1",
+    name: "GlobeChek_DESKTOP",
+    version: "V3B",
+    //Acceptable environment values: 'dev', 'qa', and 'production'
+    environment: "production",
+    //Acceptable login values: 'dummy' or 'api'
+    login: "api",
+    ftpuser: "ftpuser",
+    ftppsw: "GlobeChekPass1!",
+    ftphost: "caecvm.eastus2.cloudapp.azure.com",
+    urlPrereg:
+      "https://globecheckportal-prod-api.azurewebsites.net/api/v1/Desktop/49b0dddb-1715-4ce7-a97c-bd8a3c39e9de~e3012a47-c97d-4581-a317-b11aa29c3029/",
+    urlPortal: "https://gcdevstor.z20.web.core.windows.net/",
+    urlAPI:
+      "https://globecheckportal-prod-api.azurewebsites.net/api/v1/Desktop/49b0dddb-1715-4ce7-a97c-bd8a3c39e9de~e3012a47-c97d-4581-a317-b11aa29c3029/",
+    urlCompanyWeb: "https://www.globechek.com/",
+    va: false,
+    maxHeight: "73",
+  };
+  
