@@ -77,7 +77,7 @@ data:function() {
     Download:function(){
         this.details=this.infodetails.filter(x=> x.deviceName== this.devName);
         //module.globeIdentification = this.details.globeIdentification;
-        module.globeDeployment = this.details
+        module.globeDeployment = this.details.name
       var file = new File([ JSON.stringify(module) ], { "type" : "js" });
       let link = document.createElement('a')
       link.href = window.URL.createObjectURL(file)
