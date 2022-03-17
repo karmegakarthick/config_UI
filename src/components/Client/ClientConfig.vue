@@ -49,11 +49,12 @@ data:function() {
 
       client:'',
       details:[],
-      info:[],
-      infodetails:[],
+      info:{},
+      infodetails:{},
       IsVisible:true,
       OrgLocation:null,
-      devName:'',   
+      devName:'', 
+      data:{}  
     }
 }, 
 
@@ -64,26 +65,54 @@ data:function() {
                 client: this.client,
             }
         }).then((res)=>{
+            console.log("response is :",res)
            this.info=res.data;
-        console.log(res.data)
+           console.log("this information",this.info.locationId)
+
         }
         )
         if(this.info.length > 0){
+            console.log("this information",this.info.locationId)
         IsVisible:true;
         }
-        console.log(this.info)
-        console.log(this.infodetails)
+
     },
     Download:function(){
         this.details=this.infodetails.filter(x=> x.deviceName== this.devName);
-        //module.globeIdentification = this.details.globeIdentification;
-        module.globeDeployment = this.details
-      var file = new File([ JSON.stringify(module) ], { "type" : "js" });
+        console.log("this is the sample",this.details);
+        module.globeIdentification = this.details.globeIdentification;
+        // var m = module.globeDeployment
+        // m = this.details
+
+          var data = {value : `module.exports = {
+    globeIdentification: `+ this.details[0].deviceName +`,
+    globeDeployment: `+this.details[0].clientName+" "+this.details[0].locationName+`,
+    name: "GlobeChek_DESKTOP",
+    version: "V3B",
+    environment: "production",
+    login: "api",
+    ftpuser: "ftpuser",
+    ftppsw: "GlobeChekPass1!",
+    ftphost: "caecvm.eastus2.cloudapp.azure.com",
+    urlPrereg:
+      "https://globecheckportal-prod-api.azurewebsites.net/api/v1/Desktop/`+this.details[0].clientID+`~`+this.details[0].deviceID+`/",
+    urlPortal: "https://gcdevstor.z20.web.core.windows.net/",
+    urlAPI:
+      "https://globecheckportal-prod-api.azurewebsites.net/api/v1/Desktop/`+this.details[0].clientID+`~`+this.details[0].deviceID+`/",
+    urlCompanyWeb: "https://www.globechek.com/",
+    va: false,
+    maxHeight: "73",
+  };`
+}
+
+
+      var file = new File([ JSON.stringify(data) ], { "type" : "" });
       let link = document.createElement('a')
       link.href = window.URL.createObjectURL(file)
-      link.download = 'Config'+module.globeIdentification+'.js'
+      link.download = 'active.config.js'
       link.click()
-      console.log(module)
+      console.log("answer",this.details[0].clientName)
+
     },
 
 },
@@ -94,6 +123,9 @@ watch:{
     },
 
 },  
+
+
+
 
 }
 
