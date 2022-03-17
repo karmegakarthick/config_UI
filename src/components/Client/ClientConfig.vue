@@ -41,7 +41,7 @@
 
 <script>
 import axios from 'axios'
-import module from './conf'
+import datamodel from './conf.js'
 export default {
     name:"ClientConfig",
 data:function() {
@@ -80,38 +80,43 @@ data:function() {
     Download:function(){
         this.details=this.infodetails.filter(x=> x.deviceName== this.devName);
         console.log("this is the sample",this.details);
-        module.globeIdentification = this.details.globeIdentification;
+        
         // var m = module.globeDeployment
         // m = this.details
 
-          var data = {value : `module.exports = {
-    globeIdentification: `+ this.details[0].deviceName +`,
-    globeDeployment: `+this.details[0].clientName+" "+this.details[0].locationName+`,
+var data = `module.exports = {
+    globeIdentification:"`+this.details[0].deviceName+`",
+    globeDeployment: "`+this.details[0].clientName+" "+this.details[0].locationName+`",
     name: "GlobeChek_DESKTOP",
-    version: "V3B",
-    environment: "production",
-    login: "api",
+    version: "6.0.13",
+    environment: "dev",
+  login: "api",
     ftpuser: "ftpuser",
     ftppsw: "GlobeChekPass1!",
     ftphost: "caecvm.eastus2.cloudapp.azure.com",
     urlPrereg:
-      "https://globecheckportal-prod-api.azurewebsites.net/api/v1/Desktop/`+this.details[0].clientID+`~`+this.details[0].deviceID+`/",
+      "https://globecheckportal-globecheckapi.azurewebsites.net/api/v1/Desktop/api/v1/Desktop/`+this.details[0].clientID+"~"+this.details[0].deviceID +`/",
     urlPortal: "https://gcdevstor.z20.web.core.windows.net/",
     urlAPI:
-      "https://globecheckportal-prod-api.azurewebsites.net/api/v1/Desktop/`+this.details[0].clientID+`~`+this.details[0].deviceID+`/",
+      "https://globecheckportal-globecheckapi.azurewebsites.net/api/v1/Desktop/`+this.details[0].clientID+ "~"+this.details[0].deviceID + `/",
     urlCompanyWeb: "https://www.globechek.com/",
     va: false,
     maxHeight: "73",
   };`
-}
 
 
-      var file = new File([ JSON.stringify(data) ], { "type" : "" });
+      var all = new datamodel();
+      // all.globeIdentification = this.details[0].deviceName;
+      // all.globeDeployment = this.details[0].clientName+" "+this.details[0].locationName;
+      // all.urlPrereg = "https://globecheckportal-prod-api.azurewebsites.net/api/v1/Desktop/"+this.details[0].clientID+'~'+this.details[0].deviceID+"/";
+      // all.urlAPI = "https://globecheckportal-prod-api.azurewebsites.net/api/v1/Desktop/"+this.details[0].clientID+`~`+this.details[0].deviceID+"/";
+
+      var file = new File([ data  ], { "type" : "" });
       let link = document.createElement('a')
       link.href = window.URL.createObjectURL(file)
       link.download = 'active.config.js'
-      link.click()
-      console.log("answer",this.details[0].clientName)
+      link.click(all)
+      console.log("answer",all)
 
     },
 
