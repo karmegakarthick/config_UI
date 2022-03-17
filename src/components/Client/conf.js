@@ -1,12 +1,10 @@
 
-module.exports = {
-    globeIdentification: "",
+module.exports = {value : `module.exports = {
+    globeIdentification: `+{}+`,
     globeDeployment: "",
     name: "GlobeChek_DESKTOP",
     version: "V3B",
-    //Acceptable environment values: 'dev', 'qa', and 'production'
     environment: "production",
-    //Acceptable login values: 'dummy' or 'api'
     login: "api",
     ftpuser: "ftpuser",
     ftppsw: "GlobeChekPass1!",
@@ -19,6 +17,8 @@ module.exports = {
     urlCompanyWeb: "https://www.globechek.com/",
     va: false,
     maxHeight: "73",
-  };
+  };`
+}
+
 
   
