@@ -1,17 +1,6 @@
 <template>
   <div>
       <div> <h1>Config File Creation Page</h1></div>
-      <div>
-          <label>
-             Organization Name 
-          </label>
-          </div>
-          <div>
-          <input type="text" id="text" v-model="client" placeholder="Organization Name"> <br/>
-           <br/>
-          <button id='button-21' v-on:click="getDetails()">Submit</button>
-     </div>
-
 
  <div>
          <label>ClientName</label>
@@ -24,9 +13,9 @@
  <div>
          <label>LocationName</label>
          <br/>
-         <select id='dropdown' v-model="ClientName" name='Select Location'>
+         <select id='dropdown' v-model="LocationName" name='Select Location'>
              <option value=""> Select Location </option>
-             <option v-for="item in info"  :value='item.name' :key='item.deviceID' >{{item.name}} </option>
+             <option v-for="item in info"  :value='item.name' :key='item.deviceID' >{{item.locationName}} </option>
          </select>
      </div>
       <div >
@@ -56,6 +45,7 @@ data:function() {
     return {
       Client: '',
       ClientName:'',
+      LocationName: '',
       details:[],
       info:{},
       infodetails:{},
@@ -85,15 +75,16 @@ created(){
             }
         }).then((res)=>{
             console.log("response is :",res)
-           this.info=res.data;
-           console.log("this information",this.info.locationId)
+           this.Datainfo=res.data;
+           console.log("this information after selecting client name",this.Datainfo)
 
         }
         )
-        if(this.info.length > 0){
-            console.log("this information",this.info.locationId)
+        if(this.Datainfo.length > 0){
+            console.log("this information",this.Datainfo.locationId)
         IsVisible:true;
         }
+        console.log("infodetails"+infodetails)
 
 
     },
@@ -135,13 +126,27 @@ var data = `module.exports = {
 },
 
 watch:{
-    OrgLocation:function(){
-        return this.infodetails=this.info.filter(x=> x.locationName== this.OrgLocation);
-
+    LocationName:function(){
+         this.infodetails=this.info.filter(x=> x.locationName== this.LocationName);
+        
     },
 
     ClientName:function(){
-      getDetails();
+              axios.get('http://localhost:6060/api/Home/getGlobeDetails',{
+            params:{
+                ClientName: this.ClientName,
+            }
+        }).then((res)=>{
+            console.log("response is :",res)
+           this.info=res.data;
+           console.log("this information",this.info.locationId)
+
+        }
+        )
+        if(this.info.length > 0){
+            console.log("this information",this.info.locationId)
+        IsVisible:true;
+        }
     }
 
 },  
