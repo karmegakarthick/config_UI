@@ -1,104 +1,70 @@
 <template>
   <div>
-      <div> <h1>Config File Creation Page</h1></div>
-
- <div>
-         <label>ClientName</label>
+      <div> <h1>Configuration File</h1></div>
+      <div>
+         <label>OrganizationName</label>
          <br/>
-         <select id='dropdown' v-model="ClientName" name='Select Location'>
-             <option value=""> ClientName </option>
-             <option v-for="item in info"  :value='item.name' :key='item.deviceID' >{{item.name}} </option>
+         <select id='dropdown' v-model="clientname" name='Select Organization'>
+             <option v-for="item in info"  :value='item.name' :key='item' >{{item.name}} </option>
          </select>
      </div>
- <div>
+     <div>
          <label>LocationName</label>
          <br/>
-         <select id='dropdown' v-model="LocationName" name='Select Location'>
-             <option value=""> Select Location </option>
-             <option v-for="item in info"  :value='item.name' :key='item.deviceID' >{{item.locationName}} </option>
+         <select id='dropdown' v-model="OrgLocation" name='Select Location'>
+             <option v-for="items in infodetails"  :value='items.locationName' :key='items.deviceID' >{{items.locationName}} </option>
          </select>
      </div>
-      <div >
+      <div>
          <label>DeviceName</label>
          <br/>
          <select id='dropdown' v-model="devName">
-             <option  v-for="item in infodetails"  :value='item.deviceName' :key='item.deviceID'  >{{item.deviceName}} </option>
+             <option  v-for="dataitem in details"  :value='dataitem.deviceName' :key='dataitem.deviceID'  >{{dataitem.deviceName}} </option>
          </select>
      </div>
-
-     <div >
-          <button id='button-21' v-on:click="Download()">Download Config File</button>
+     <div>
+          <button id='button-18' v-on:click="Download()">Download</button> &nbsp;  <button id='button-1'>Cancel</button>
      </div>
-     
 </div>
-
-
-
-  
 </template>
-
 <script>
 import axios from 'axios'
+
 export default {
     name:"ClientConfig",
 data:function() {
     return {
-      Client: '',
-      ClientName:'',
-      LocationName: '',
+      clientname:'',
       details:[],
-      info:{},
-      infodetails:{},
+      info:[],
+      infodetails:[],
       IsVisible:true,
       OrgLocation:null,
       devName:'', 
       data:{}  
     }
 }, 
-
 created(){
-          axios.get('http://localhost:6060/api/Home/getClientName').then((res)=>{
-            console.log("response is :",res)
+   axios.get('http://localhost:6060/api/Home/getClientName')
+          .then((res)=>{
            this.info=res.data;
-           console.log("clientName",this.info)
-
+           console.log(this.info)
         }
         )
-
 },
-
  methods : {
-    getDetails:function(){
-        axios.get('http://localhost:6060/api/Home/getGlobeDetails',{
-            params:{
-                client: this.ClientName,
-            }
-        }).then((res)=>{
-            console.log("response is :",res)
-           this.Datainfo=res.data;
-           console.log("this information after selecting client name",this.Datainfo)
-
-        }
-        )
-        if(this.Datainfo.length > 0){
-            console.log("this information",this.Datainfo.locationId)
-        IsVisible:true;
-        }
-        console.log("infodetails"+infodetails)
-
-
-    },
     Download:function(){
         this.details=this.infodetails.filter(x=> x.deviceName== this.devName);
         console.log("this is the sample",this.details);
-
+        // var m = module.globeDeployment
+        // m = this.details
 var data = `module.exports = {
     globeIdentification:"`+this.details[0].deviceName+`",
     globeDeployment: "`+this.details[0].clientName+" "+this.details[0].locationName+`",
     name: "GlobeChek_DESKTOP",
     version: "6.0.13",
     environment: "dev",
-  login: "api",
+    login: "api",
     ftpuser: "ftpuser",
     ftppsw: "GlobeChekPass1!",
     ftphost: "caecvm.eastus2.cloudapp.azure.com",
@@ -111,55 +77,39 @@ var data = `module.exports = {
     va: false,
     maxHeight: "73",
   };`
-
-
-      var all = new datamodel();
+      // var all = new datamodel();
+      // all.globeIdentification = this.details[0].deviceName;
+      // all.globeDeployment = this.details[0].clientName+" "+this.details[0].locationName;
+      // all.urlPrereg = "https://globecheckportal-prod-api.azurewebsites.net/api/v1/Desktop/"+this.details[0].clientID+'~'+this.details[0].deviceID+"/";
+      // all.urlAPI = "https://globecheckportal-prod-api.azurewebsites.net/api/v1/Desktop/"+this.details[0].clientID+`~`+this.details[0].deviceID+"/";
       var file = new File([ data  ], { "type" : "" });
       let link = document.createElement('a')
       link.href = window.URL.createObjectURL(file)
       link.download = 'active.config.js'
-      link.click(all)
-      console.log("answer",all)
-
+      link.click()
+      // console.log("answer",all)
     },
 
+
+    
 },
-
 watch:{
-    LocationName:function(){
-         this.infodetails=this.info.filter(x=> x.locationName== this.LocationName);
-        
-    },
-
-    ClientName:function(){
-              axios.get('http://localhost:6060/api/Home/getGlobeDetails',{
+   clientname(){
+        axios.get('http://localhost:6060/api/Home/getGlobeDetails',{
             params:{
-                ClientName: this.ClientName,
+                ClientName: this.clientname,
             }
         }).then((res)=>{
             console.log("response is :",res)
-           this.info=res.data;
-           console.log("this information",this.info.locationId)
-
-        }
-        )
-        if(this.info.length > 0){
-            console.log("this information",this.info.locationId)
-        IsVisible:true;
-        }
-    }
-
+           this.infodetails=res.data;
+           console.log("this information",this.infodetails)})
+           },
+    OrgLocation(){
+        return this.details=this.infodetails;
+    },
 },  
-
-
-
-
 }
-
-
-
 </script>
-
 <style>
 #button {
   background-color: #4c7aaf; /* Green */
@@ -171,49 +121,107 @@ watch:{
   display: inline-block;
   font-size: 16px;
 }
-#button-21 {
+
+
+
+#button-18 {
   align-items: center;
-  appearance: none;
-  background-color: #3EB2FD;
-  background-image: linear-gradient(1deg, #4F58FD, #149BF3 99%);
-  background-size: calc(100% + 20px) calc(100% + 20px);
+  background-color: #0A66C2;
+  
+  border-color: #0A66C2;
   border-radius: 100px;
-  border-width: 0;
-  box-shadow: none;
   box-sizing: border-box;
-  color: #FFFFFF;
+  color: #ffffff;
   cursor: pointer;
   display: inline-flex;
-  font-family: CircularStd,sans-serif;
-  font-size: 1rem;
-  height: auto;
+  font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
   justify-content: center;
-  line-height: 1.5;
-  padding: 6px 20px;
-  position: relative;
+  line-height: 20px;
+  max-width: 480px;
+  min-height: 40px;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
   text-align: center;
-  text-decoration: none;
-  transition: background-color .2s,background-position .2s;
+  touch-action: manipulation;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
   user-select: none;
   -webkit-user-select: none;
-  touch-action: manipulation;
-  vertical-align: top;
-  white-space: nowrap;
+  vertical-align: middle;
 }
 
-.button-21:active,
-.button-21:focus {
-  outline: none;
+#button-18:hover,
+#button-18:focus { 
+  background-color: #ffffff;
+  color: #0A66C2;
 }
 
-.button-21:hover {
-  background-position: -20px -20px;
+#button-18:active {
+  background: #09223b;
+  color: rgb(255, 255, 255, .7);
 }
 
-.button-21:focus:not(:active) {
-  box-shadow: rgba(40, 170, 255, 0.25) 0 0 0 .125em;
+#button-18:disabled { 
+  cursor: not-allowed;
+  background: rgb(255, 255, 255);
+  color: rgba(255, 254, 254, 0.994);
 }
+
+
+
+
+#button-1 {
+  align-items: center;
+  background-color: #ffffff;
   
+  border-color: #444444;
+  border-radius: 100px;
+  box-sizing: border-box;
+  color: #444444;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: -apple-system, system-ui, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 20px;
+  max-width: 480px;
+  min-height: 40px;
+  min-width: 0px;
+  overflow: hidden;
+  padding: 0px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  touch-action: manipulation;
+  transition: background-color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, box-shadow 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s, color 0.167s cubic-bezier(0.4, 0, 0.2, 1) 0s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+}
+
+#button-1:hover,
+#button-1:focus { 
+  background-color: #d4d1d1;
+  color: #1d1d1d;
+}
+
+#button-1:active {
+  background: #09223b;
+  color: rgb(255, 255, 255, .7);
+}
+
+#button-1:disabled { 
+  cursor: not-allowed;
+  background: rgb(255, 255, 255);
+  color: rgba(255, 254, 254, 0.994);
+}
+
+
 
 #text {
     width: 20%;
@@ -225,54 +233,8 @@ watch:{
   box-sizing: border-box;
 }
 div {
-  border-radius: 5px;
+  border-radius: 10px;
   background-color: #f2f2f2;
-  padding: 5px;
+  padding: 20px;
 }
-
-
-</style>
-
-
-
-<style >
-
-
-#button-24 {
-  background-color: #ffffff;
-  background-image: linear-gradient(1deg, #3EB2FD, #ffffff 99%);
-  border: 1px solid #3EB2FD;
-  border-radius: 6px;
-  box-shadow: rgba(0, 0, 0, 0.1) 1px 2px 4px;
-  box-sizing: border-box;
-  color: #FFFFFF;
-  cursor: pointer;
-  display: inline-block;
-  font-family: nunito,roboto,proxima-nova,"proxima nova",sans-serif;
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 16px;
-  min-height: 40px;
-  outline: 0;
-  padding: 12px 14px;
-  text-align: center;
-  text-rendering: geometricprecision; 
-  text-transform: none;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  vertical-align: middle;
-}
-
-#button-24:hover,
-#button-24:active {
-  background-color: initial;
-  background-position: 0 0;
-  color: #3EB2FD;
-}
-
-#button-24:active {
-  opacity: .5;
-}
-
 </style>
